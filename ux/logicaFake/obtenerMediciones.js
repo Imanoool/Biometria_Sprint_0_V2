@@ -16,12 +16,21 @@
  * @param {number} limite Cantidad máxima de mediciones a recuperar (N)
  * @param {Function} cb Callback con firma cb(err, res) donde res es un array de mediciones
  */
+function _obtenerRutaRest(endpoint) {
+    if (typeof window !== 'undefined' && window.location && window.location.pathname) {
+        if (window.location.pathname.indexOf('/logicaFake/') !== -1) {
+            return '../../rest/' + endpoint;
+        }
+    }
+    return '../rest/' + endpoint;
+}
+
 function obtenerUltimasMediciones(limite, cb) {
     if (typeof cb !== 'function') {
         cb = function() {};
     }
 
-    var url = '../rest/obtenerMediciones.php';
+    var url = _obtenerRutaRest('obtenerMediciones.php');
     if (typeof limite === 'number' && limite > 0) {
         url += '?limite=' + encodeURIComponent(limite);
     }
@@ -80,7 +89,7 @@ function obtenerUltimaMedicion(cb) {
     }
 
     // Petición al endpoint REST con parámetro ultima=true (o sin límite)
-    var url = '../rest/obtenerMediciones.php?ultima=true';
+    var url = _obtenerRutaRest('obtenerMediciones.php?ultima=true');
 
     if (typeof window !== 'undefined' && window.fetch) {
         fetch(url, {

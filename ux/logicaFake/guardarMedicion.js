@@ -18,6 +18,15 @@
  * @param {string} [arg4] Tiempo (Texto)
  * @param {Function} [arg5] Callback(err, res)
  */
+function _obtenerRutaRestGuardar(endpoint) {
+    if (typeof window !== 'undefined' && window.location && window.location.pathname) {
+        if (window.location.pathname.indexOf('/logicaFake/') !== -1) {
+            return '../../rest/' + endpoint;
+        }
+    }
+    return '../rest/' + endpoint;
+}
+
 function guardarMedicion(arg1, arg2, arg3, arg4, arg5) {
     var payload;
     var cb;
@@ -47,7 +56,7 @@ function guardarMedicion(arg1, arg2, arg3, arg4, arg5) {
 
     // Usar Fetch API moderna con compatibilidad hacia XMLHttpRequest
     if (typeof window !== 'undefined' && window.fetch) {
-        fetch('../rest/guardarMedicion.php', {
+        fetch(_obtenerRutaRestGuardar('guardarMedicion.php'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
