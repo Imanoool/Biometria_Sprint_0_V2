@@ -15,3 +15,8 @@ logcat_temp.txt
 __MACOSX/
 *.pyc
 
+# Private exam notes (do not push to repo)
+GUIA_EXAMEN_DEFENSA.md
+GUIA_DEMO.md
+
+
