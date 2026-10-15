@@ -1,0 +1,377 @@
+/* ============================================================================
+ * Proyecto: Biometría y Medio Ambiente
+ * Asignatura: Proyecto Biometría (PBIO) - Sprint 0
+ * Archivo: estilos.css
+ * Descripción: Estilos CSS modernos, responsivos y con accesibilidad (WCAG)
+ * ============================================================================ */
+
+:root {
+    --color-primario: #0284c7;
+    --color-primario-hover: #0369a1;
+    --color-fondo: #f1f5f9;
+    --color-tarjeta: #ffffff;
+    --color-texto: #0f172a;
+    --color-texto-suave: #64748b;
+    --color-borde: #e2e8f0;
+    
+    /* Estados y Calidad del Aire */
+    --color-exito: #16a34a;
+    --color-exito-fondo: #dcfce7;
+    --color-alerta: #d97706;
+    --color-alerta-fondo: #fef3c7;
+    --color-peligro: #dc2626;
+    --color-peligro-fondo: #fee2e2;
+
+    --sombra-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --sombra-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --sombra-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    
+    --radio-borde: 12px;
+    --transicion: all 0.2s ease-in-out;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.6;
+    padding: 0;
+}
+
+/* Enfoque accesible para navegación por teclado */
+*:focus-visible {
+    outline: 3px solid var(--color-primario);
+    outline-offset: 2px;
+}
+
+/* Contenedor Principal */
+.contenedor-app {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+/* Encabezado */
+.app-header {
+    background: var(--color-tarjeta);
+    padding: 1.5rem 2rem;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-sm);
+    border: 1px solid var(--color-borde);
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.header-titulos h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-texto);
+}
+
+.header-titulos p {
+    margin: 0.25rem 0 0 0;
+    color: var(--color-texto-suave);
+    font-size: 0.95rem;
+}
+
+.badge-conexion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background-color: var(--color-exito-fondo);
+    color: var(--color-exito);
+}
+
+.punto-latido {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-exito);
+    box-shadow: 0 0 0 rgba(22, 163, 74, 0.4);
+    animation: latido 2s infinite;
+}
+
+@keyframes latido {
+    0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+    70% { box-shadow: 0 0 0 6px rgba(22, 163, 74, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+}
+
+/* Barra de Controles y Estado */
+.panel-controles {
+    background: var(--color-tarjeta);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-sm);
+    border: 1px solid var(--color-borde);
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.grupo-botones {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-accion {
+    background-color: var(--color-primario);
+    color: #ffffff;
+    border: none;
+    padding: 0.65rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transicion);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-accion:hover {
+    background-color: var(--color-primario-hover);
+    transform: translateY(-1px);
+}
+
+.btn-accion:active {
+    transform: translateY(0);
+}
+
+.control-autorefresco {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: var(--color-texto);
+    cursor: pointer;
+    user-select: none;
+}
+
+.control-autorefresco input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+}
+
+.barra-estado {
+    font-size: 0.9rem;
+    color: var(--color-texto-suave);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.barra-estado strong {
+    color: var(--color-texto);
+}
+
+/* Tarjeta Principal Destacada */
+.tarjeta-principal {
+    background: var(--color-tarjeta);
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-md);
+    border: 1px solid var(--color-borde);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.tarjeta-principal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--color-primario), #38bdf8);
+}
+
+.tarjeta-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1rem;
+}
+
+.tarjeta-cabecera h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--color-texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.valor-destacado-contenedor {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.valor-grande {
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--color-texto);
+    line-height: 1;
+}
+
+.unidad-gas {
+    font-size: 1.5rem;
+    color: var(--color-texto-suave);
+    font-weight: 500;
+}
+
+.badge-calidad {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.calidad-optima {
+    background-color: var(--color-exito-fondo);
+    color: var(--color-exito);
+}
+
+.calidad-moderada {
+    background-color: var(--color-alerta-fondo);
+    color: var(--color-alerta);
+}
+
+.calidad-alerta {
+    background-color: var(--color-peligro-fondo);
+    color: var(--color-peligro);
+}
+
+.metadatos-medicion {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-borde);
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.meta-etiqueta {
+    font-size: 0.8rem;
+    color: var(--color-texto-suave);
+    text-transform: uppercase;
+}
+
+.meta-valor {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-texto);
+}
+
+/* Sección de Histórico */
+.seccion-historico {
+    background: var(--color-tarjeta);
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra-sm);
+    border: 1px solid var(--color-borde);
+    padding: 1.75rem;
+}
+
+.seccion-historico h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    color: var(--color-texto);
+}
+
+.tabla-responsiva {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+caption {
+    text-align: left;
+    padding-bottom: 0.75rem;
+    color: var(--color-texto-suave);
+    font-size: 0.85rem;
+}
+
+th {
+    background-color: #f8fafc;
+    color: var(--color-texto-suave);
+    font-weight: 600;
+    padding: 0.85rem 1rem;
+    border-bottom: 2px solid var(--color-borde);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+}
+
+td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--color-borde);
+    color: var(--color-texto);
+}
+
+tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Pie de Página */
+.app-footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: var(--color-texto-suave);
+    font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .contenedor-app {
+        padding: 1rem;
+    }
+    .valor-grande {
+        font-size: 2.8rem;
+    }
+    .panel-controles {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .grupo-botones {
+        justify-content: space-between;
+    }
+}
+
