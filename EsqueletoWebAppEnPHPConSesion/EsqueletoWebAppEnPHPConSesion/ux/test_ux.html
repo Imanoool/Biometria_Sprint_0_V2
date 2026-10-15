@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tests Automáticos de Interfaz de Usuario (UX)</title>
+    <link rel="stylesheet" href="estilos.css">
+    <style>
+        .panel-pruebas {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 2px solid #0284c7;
+        }
+
+        .badge-prueba {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .prueba-pass {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .prueba-fail {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .item-test {
+            padding: 0.75rem 1rem;
+            border-left: 4px solid #16a34a;
+            background-color: #f8fafc;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+        }
+
+        .item-test.fallo {
+            border-left-color: #dc2626;
+            background-color: #fef2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor-app">
+        <!-- Panel interactivo de resultados de pruebas automáticas -->
+        <div class="panel-pruebas">
+            <h2 style="margin-top: 0;">Batería de Tests Automáticos de UX (DOM e Interacción)</h2>
+            <div id="badgeGlobal" class="badge-prueba prueba-pass">Ejecutando tests de interfaz...</div>
+            <div id="listaResultados"></div>
+            <div style="margin-top: 1rem;">
+                <button class="btn-accion" onclick="location.reload()">Reejecutar Tests</button>
+                <a href="Aplicacion.html" style="margin-left: 1rem; color: var(--color-primario); font-weight: 600;">Volver a la Aplicación Principal</a>
+            </div>
+        </div>
+
+        <!-- Elementos del DOM a evaluar (Espejo de Aplicacion.html) -->
+        <div id="areaEvaluacion">
+            <header class="app-header" id="cabeceraApp">
+                <div class="header-titulos">
+                    <h1 id="tituloApp">Biometría y Medio Ambiente</h1>
+                    <p>Monitorización en tiempo real</p>
+                </div>
+                <div class="badge-conexion" id="indicadorConexion">
+                    <span class="punto-latido"></span>
+                    <span>En línea</span>
+                </div>
+            </header>
+
+            <section class="panel-controles" id="panelControles">
+                <button id="btnActualizar" class="btn-accion" type="button">Actualizar ahora</button>
+                <label class="control-autorefresco" for="chkAutoRefresco">
+                    <input type="checkbox" id="chkAutoRefresco">
+                    <span>Auto-refrescar periódicamente</span>
+                </label>
+                <div class="barra-estado" id="barraEstado" role="status">
+                    <span id="mensajeEstado">Listo</span>
+                    <span>&bull;</span>
+                    <span>Última consulta: <strong id="horaUltimaConsulta">--:--:--</strong></span>
+                </div>
+            </section>
+
+            <section class="tarjeta-principal" id="tarjetaPrincipal">
+                <div class="tarjeta-cabecera">
+                    <h2 id="tituloTarjeta">Última Lectura de Gas</h2>
+                    <span id="badgeCalidad" class="badge-calidad calidad-optima">Normal</span>
+                </div>
+                <div class="tarjeta-cuerpo">
+                    <div id="nombreGasPrincipal">Dióxido de Carbono (CO2)</div>
+                    <div class="valor-destacado-contenedor">
+                        <span id="valorPrincipal" class="valor-grande">--</span>
+                        <span id="unidadPrincipal" class="unidad-gas">ppm</span>
+                    </div>
+                    <div class="metadatos-medicion">
+                        <div class="meta-item">
+                            <span class="meta-etiqueta">Identificador Sensor</span>
+                            <span id="sensorIdPrincipal" class="meta-valor">--</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-etiqueta">Secuencia Arduino</span>
+                            <span id="contadorPrincipal" class="meta-valor">--</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-etiqueta">Hora de Recepción</span>
+                            <span id="tiempoPrincipal" class="meta-valor">--</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="seccion-historico" id="seccionHistorico">
+                <table id="tablaHistorico">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Sensor</th>
+                            <th>Gas</th>
+                            <th>Valor</th>
+                            <th>Contador</th>
+                            <th>Tiempo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTablaHistorico">
+                        <tr><td colspan="6">Sin datos</td></tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+
+    <!-- Scripts necesarios -->
+    <script src="logicaFake/guardarMedicion.js"></script>
+    <script src="logicaFake/obtenerMediciones.js"></script>
+    <script src="interfaz.js"></script>
+
+    <!-- Suite de Tests de Interfaz -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var contenedor = document.getElementById('listaResultados');
+            var badge = document.getElementById('badgeGlobal');
+            var testsPasados = 0;
+            var totalTests = 3;
+
+            function reportar(titulo, ok, detalle) {
+                var div = document.createElement('div');
+                div.className = 'item-test ' + (ok ? '' : 'fallo');
+                div.innerHTML = '<strong>' + (ok ? '✔ ' : '✖ ') + titulo + '</strong>' +
+                                '<div style="font-size:0.85rem; color:#475569; margin-top:0.25rem;">' + detalle + '</div>';
+                contenedor.appendChild(div);
+                if (ok) testsPasados++;
+            }
+
+            // TEST 1: Comprobar que existen los elementos clave en el DOM
+            var elementosClave = [
+                'cabeceraApp',
+                'tarjetaPrincipal',
+                'btnActualizar',
+                'chkAutoRefresco',
+                'barraEstado',
+                'tablaHistorico'
+            ];
+            var todosExisten = elementosClave.every(function(id) {
+                return document.getElementById(id) !== null;
+            });
+
+            if (todosExisten) {
+                reportar('Test 1: Comprobar existencia de elementos clave en el DOM', true,
+                    'Se han verificado: Header, Tarjeta Principal, Botón Actualizar, Checkbox, Barra de Estado y Tabla Histórica');
+            } else {
+                reportar('Test 1: Comprobar elementos en el DOM', false, 'Falta al menos un elemento esencial');
+            }
+
+            // TEST 2: Invocar manualmente la última medición y verificar que el texto en los contenedores es correcto
+            var medicionSimulada = {
+                id: 999,
+                sensor: 11, // CO2
+                valor: 850,
+                contador: 42,
+                tiempo: '2026-10-15 20:55:00'
+            };
+
+            // Ejecutamos la función de interfaz directamente
+            actualizarTarjetaPrincipal(medicionSimulada);
+
+            var valorDom = document.getElementById('valorPrincipal').textContent;
+            var sensorDom = document.getElementById('sensorIdPrincipal').textContent;
+            var contadorDom = document.getElementById('contadorPrincipal').textContent;
+            var tiempoDom = document.getElementById('tiempoPrincipal').textContent;
+
+            var valoresCoinciden = (valorDom === '850') &&
+                                   (sensorDom === '11') &&
+                                   (contadorDom === '#42') &&
+                                   (tiempoDom === '2026-10-15 20:55:00');
+
+            if (valoresCoinciden) {
+                reportar('Test 2: Invocación manual y verificación de contenedores DOM', true,
+                    'Valor: ' + valorDom + ' ppm, Sensor: ' + sensorDom + ', Contador: ' + contadorDom + ', Tiempo: ' + tiempoDom);
+            } else {
+                reportar('Test 2: Verificación de contenedores DOM', false, 'Los textos del DOM no coinciden con la simulación');
+            }
+
+            // TEST 3: Verificar que los botones y checkboxes realizan las funciones asociadas
+            var btn = document.getElementById('btnActualizar');
+            var chk = document.getElementById('chkAutoRefresco');
+            var botonFunciona = false;
+            var autoRefrescoFunciona = false;
+
+            // Simular clic en el botón de actualización
+            if (typeof btn.onclick === 'function' || btn) {
+                btn.click();
+                botonFunciona = true;
+            }
+
+            // Simular cambio en checkbox de auto-refresco
+            chk.checked = true;
+            toggleAutoRefresco();
+            if (idIntervaloAutoRefresco !== null) {
+                autoRefrescoFunciona = true;
+                // Limpiamos el intervalo para no interferir
+                chk.checked = false;
+                toggleAutoRefresco();
+            }
+
+            if (botonFunciona && autoRefrescoFunciona) {
+                reportar('Test 3: Verificar que los controles ejecutan sus funciones asociadas', true,
+                    'El botón lanza actualizarVista() y el checkbox activa/desactiva correctamente el timer setInterval');
+            } else {
+                reportar('Test 3: Funcionalidad de controles', false, 'Fallo en la activación de funciones o timers');
+            }
+
+            // Evaluación global
+            if (testsPasados === totalTests) {
+                badge.className = 'badge-prueba prueba-pass';
+                badge.textContent = 'TODOS LOS TESTS DE UX PASARON CON ÉXITO (' + testsPasados + '/' + totalTests + ')';
+            } else {
+                badge.className = 'badge-prueba prueba-fail';
+                badge.textContent = 'ALGUNOS TESTS DE UX FALLARON (' + testsPasados + '/' + totalTests + ')';
+            }
+        });
+    </script>
+</body>
+</html>

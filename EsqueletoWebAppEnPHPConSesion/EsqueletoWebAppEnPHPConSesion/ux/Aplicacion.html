@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- ==================================================================== -->
+    <!-- Proyecto: Biometría y Medio Ambiente                                -->
+    <!-- Asignatura: Proyecto Biometría (PBIO) - Sprint 0                     -->
+    <!-- Archivo: Aplicacion.html                                             -->
+    <!-- Descripción: Interfaz web de monitorización de gases (HTML5, CSS3,   -->
+    <!--              accesibilidad WCAG y experiencia de usuario moderna).   -->
+    <!-- ==================================================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de monitorización de gases biometría y medio ambiente">
+    <title>Biometría y Medio Ambiente - Monitorización de Gases</title>
+    
+    <!-- Hoja de estilos moderna y responsiva -->
+    <link rel="stylesheet" href="estilos.css">
+    
+    <!-- Scripts de la capa de abstracción logicaFake (evitan llamadas HTTP directas en la vista) -->
+    <script src="logicaFake/guardarMedicion.js"></script>
+    <script src="logicaFake/obtenerMediciones.js"></script>
+    
+    <!-- Controlador de interfaz gráfica -->
+    <script src="interfaz.js"></script>
+</head>
+<body>
+    <div class="contenedor-app">
+        <!-- 1. Encabezado con título del proyecto y estado general -->
+        <header class="app-header" role="banner">
+            <div class="header-titulos">
+                <h1>Biometría y Medio Ambiente</h1>
+                <p>Monitorización en tiempo real de gases: Arduino &rarr; Android &rarr; Servidor REST &rarr; BBDD</p>
+            </div>
+            <div class="badge-conexion" id="indicadorConexion" aria-label="Estado de conexión con el sistema">
+                <span class="punto-latido" aria-hidden="true"></span>
+                <span>En línea / Servidor Activo</span>
+            </div>
+        </header>
+
+        <!-- Contenido Principal -->
+        <main class="app-main" role="main">
+            <!-- 3. Controles para actualizar y checkbox para auto refrescarse periódicamente -->
+            <!-- 4. Barra de estado de la última consulta exitosa -->
+            <section class="panel-controles" aria-label="Controles de actualización de datos">
+                <div class="grupo-botones">
+                    <button id="btnActualizar" class="btn-accion" type="button" aria-label="Actualizar datos de los sensores ahora">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                        </svg>
+                        Actualizar ahora
+                    </button>
+
+                    <label class="control-autorefresco" for="chkAutoRefresco">
+                        <input type="checkbox" id="chkAutoRefresco" name="autoRefresco">
+                        <span>Auto-refrescar periódicamente</span>
+                    </label>
+                </div>
+
+                <div class="barra-estado" id="barraEstado" role="status" aria-live="polite">
+                    <span id="mensajeEstado">Listo</span>
+                    <span>&bull;</span>
+                    <span>Última consulta exitosa: <strong id="horaUltimaConsulta">--:--:--</strong></span>
+                </div>
+            </section>
+
+            <!-- 2. Tarjeta principal con el último valor de un gas con tamaño legible -->
+            <section class="tarjeta-principal" aria-labelledby="titulo-tarjeta-principal">
+                <div class="tarjeta-cabecera">
+                    <h2 id="titulo-tarjeta-principal">Última Lectura de Gas</h2>
+                    <span id="badgeCalidad" class="badge-calidad calidad-optima">Evaluando...</span>
+                </div>
+
+                <div class="tarjeta-cuerpo">
+                    <div id="nombreGasPrincipal" style="font-size: 1.2rem; font-weight: 600; color: #475569;">
+                        Cargando sensor...
+                    </div>
+                    
+                    <div class="valor-destacado-contenedor">
+                        <span id="valorPrincipal" class="valor-grande">--</span>
+                        <span id="unidadPrincipal" class="unidad-gas">ppm</span>
+                    </div>
+
+                    <div class="metadatos-medicion">
+                        <div class="meta-item">
+                            <span class="meta-etiqueta">Identificador Sensor</span>
+                            <span id="sensorIdPrincipal" class="meta-valor">--</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-etiqueta">Secuencia Arduino</span>
+                            <span id="contadorPrincipal" class="meta-valor">--</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-etiqueta">Hora de Recepción</span>
+                            <span id="tiempoPrincipal" class="meta-valor">--</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Tabla con el histórico de las últimas mediciones y sus campos -->
+            <section class="seccion-historico" aria-labelledby="titulo-historico">
+                <h3 id="titulo-historico">Histórico de Mediciones Recientes</h3>
+                <div class="tabla-responsiva">
+                    <table aria-label="Tabla con las últimas lecturas registradas">
+                        <caption>Registros cronológicos almacenados en la base de datos</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Sensor (Z)</th>
+                                <th scope="col">Tipo de Gas</th>
+                                <th scope="col">Valor (Z)</th>
+                                <th scope="col">Contador (N)</th>
+                                <th scope="col">Tiempo Servidor (Text)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTablaHistorico">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 1.5rem; color: #64748b;">
+                                    Cargando datos desde el servidor...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <!-- Pie de Página -->
+        <footer class="app-footer" role="contentinfo">
+            <p>Proyecto Biometría y Medio Ambiente &copy; 2026 &bull; Grado en Tecnologías de Telecomunicación / Sonido e Imagen (UPV)</p>
+            <p><a href="logicaFake/test_logicaFake.html" style="color: var(--color-primario);">Ver Tests de logicaFake</a> &bull; <a href="test_ux.html" style="color: var(--color-primario);">Ver Tests de Interfaz</a></p>
+        </footer>
+    </div>
+</body>
+</html>
