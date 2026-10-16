@@ -120,33 +120,40 @@ void loop () {
 
   lucecitas();
 
-  // 
-  // Mido y publico CO2 (235 ppm)
-  // 
-  int valorCO2 = elMedidor.medirCO2();
+  // =========================================================================
+  // PARÁMETROS CONFIGURABLES PARA LA DEFENSA (CAMBIO DE VALORES EN VIVO)
+  // =========================================================================
+  // 1. Concentración de CO2 (medido en ppm):
+  int valorCO2 = 450; // Cambia este número para cambiar el CO2 en ppm
+  
+  // 2. Temperatura ambiental (medido en ºC / Grados):
+  int valorTemperatura = 24; // Cambia este número para cambiar los grados ºC
+  // =========================================================================
+
+  //
+  // Publicar CO2 (ppm)
+  //
   elPuerto.escribir( " Publicando CO2 = " );
   elPuerto.escribir( valorCO2 );
-  elPuerto.escribir( "\n" );
+  elPuerto.escribir( " ppm\n" );
   
   elPublicador.publicarCO2( valorCO2,
 							cont,
 							1500 // intervalo de emisión: 1.5 segundos
 							);
   
-  /*
-  // 
-  // Mido y publico Temperatura (-12 C)
-  // 
-  int valorTemperatura = elMedidor.medirTemperatura();
+  //
+  // Publicar Temperatura (Grados ºC)
+  //
   elPuerto.escribir( " Publicando Temperatura = " );
   elPuerto.escribir( valorTemperatura );
-  elPuerto.escribir( "\n" );
+  elPuerto.escribir( " ºC\n" );
   
   elPublicador.publicarTemperatura( valorTemperatura, 
 									cont,
 									1500 // intervalo de emisión: 1.5 segundos
 									);
-  */
+
 
   // La prueba libre "MolaMola..." se elimina para no tapar los beacons del proyecto
   /*
